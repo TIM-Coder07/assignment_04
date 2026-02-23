@@ -124,39 +124,7 @@ function renderJobsCard(filter = "All") {
     ).length;
   }
 
-  filteredJobs.forEach((job) => {
-    const card = document.createElement("div");
-    card.className = "bg-white p-6 rounded-lg shadow border border-gray-200";
-
-    card.innerHTML = `
-      <div class='flex justify-betwine'>
-        <h3 class="text-lg font-semibold text-gray-800 mb-1">${job.companyName}</h3>
-        <button class="py-1 px-2 bg-gray-200 text-red-700 rounded hover:bg-gray-300"
-          onclick="deleteJob(${job.id}, '${currentFilter}')">
-          Delete
-        </button>
-      </div>
-      <p class="text-gray-600 mb-2">${job.position}</p>
-      <div class="flex flex-wrap text-sm text-gray-500 mb-2 gap-2">
-        <span>${job.location}</span> • 
-        <span>${job.type}</span> • 
-        <span>${job.salary}</span>
-      </div>
-      <p class="text-gray-700 mb-4">${job.description}</p>
-      <div class="flex gap-3">
-        <button class="flex-1 py-2 px-4 bg-green-100 text-green-700 font-semibold rounded-lg hover:bg-green-200"
-                onclick="updateStatus(${job.id}, 'Interview')">
-          Interview
-        </button>
-        <button class="flex-1 py-2 px-4 bg-red-100 text-red-700 font-semibold rounded-lg hover:bg-red-200"
-                onclick="updateStatus(${job.id}, 'Rejected')">
-          Rejected
-        </button>
-      </div>
-    `;
-
-    jobsContainer.appendChild(card);
-  });
+  
 
   updateDashboardCounts();
   highlightActiveCard();
