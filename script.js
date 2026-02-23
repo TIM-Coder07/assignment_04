@@ -175,7 +175,21 @@ function updateStatus(id, newStatus) {
   renderJobsCard(currentFilter);
 }
 
+//Delete function
+function deleteJob(id, section) {
+  const job = jobs.find(j => j.id === id);
+  if (!job) return;
 
+  if (section === "All") {
+    // Hard delete (remove completely)
+    jobs = jobs.filter(j => j.id !== id);
+  } else {
+    // Soft delete (reset status only)
+    job.status = "Pending";
+  }
+
+  renderJobsCard(currentFilter);
+}
 
 // Dashboard Filter
 function filterDashboard(filter) {
