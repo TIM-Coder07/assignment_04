@@ -85,6 +85,16 @@ const jobsContainer = document.getElementById("jobsContainer");
 
 let currentFilter = "All";
 
+function updateDashboardCounts() {
+  document.getElementById("totalCount").innerText = jobs.length;
+
+  document.getElementById("interviewCount").innerText =
+    jobs.filter(job => job.status === "Interview").length;
+
+  document.getElementById("rejectedCount").innerText =
+    jobs.filter(job => job.status === "Rejected").length;
+}
+
 // Render Jobs
 function renderJobsCard(filter = "All") {
   currentFilter = filter;
@@ -98,56 +108,67 @@ function renderJobsCard(filter = "All") {
     filteredJobs = jobs.filter((job) => job.status === filter);
   }
 
+  // Count updat
+  document.getElementById("availableCount").innerText =
+    `${filteredJobs.length} of ${jobs.length}`;
+
   if (filteredJobs.length === 0) {
     jobsContainer.innerHTML = `
-    <div class="col-span-full text-center p-10 bg-white rounded shadow">
+      <div class="col-span-full text-center p-10 bg-white rounded shadow">
       <img 
-        src="./asset/jobs.png"
-        alt="No Jobs"
-        class="mx-auto mb-4 w-40"
+        src="./asset/jobs.png" 
+        alt="No Jobs" 
+        class="mx-auto mb-4 w-40 opacity-80"
       />
-      <h3 class="text-xl font-semibold mb-2">No Jobs Available</h3>
-    </div>
-  `;
-  }
-
-  // Update Counts
-  function updateDashboardCounts() {
-    document.getElementById("totalCount").innerText = jobs.length;
-
-    document.getElementById("interviewCount").innerText = jobs.filter(
-      (job) => job.status === "Interview",
-    ).length;
-
-    document.getElementById("rejectedCount").innerText = jobs.filter(
-      (job) => job.status === "Rejected",
-    ).length;
+        <h3 class="text-xl font-semibold mb-2">No Jobs Available</h3>
+      </div>
+    `;
   }
 
   filteredJobs.forEach((job) => {
     const card = document.createElement("div");
     card.className = "bg-white p-6 rounded-lg shadow border border-gray-200";
 
+    let badgeColor = "";
+    if (job.status === "Interview") {
+      badgeColor = "bg-green-100 text-green-700";
+    } else if (job.status === "Rejected") {
+      badgeColor = "bg-red-100 text-red-700";
+    } else {
+      badgeColor = "bg-yellow-100 text-yellow-700";
+    }
+
     card.innerHTML = `
-      <div class='flex justify-between'>
-        <h3 class="text-lg font-semibold text-gray-800 mb-1">${job.companyName}</h3>
+      <div class='flex justify-between items-start'>
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800">${job.companyName}</h3>
+          <span class="inline-block mt-1 px-2 py-1 text-xs font-semibold rounded ${badgeColor}">
+            ${job.status}
+          </span>
+        </div>
+
         <button class="py-1 px-2 bg-gray-200 text-red-700 rounded hover:bg-gray-300"
           onclick="deleteJob(${job.id}, '${currentFilter}')">
           Delete
         </button>
       </div>
-      <p class="text-gray-600 mb-2">${job.position}</p>
+
+      <p class="text-gray-600 mt-2 mb-2">${job.position}</p>
+
       <div class="flex flex-wrap text-sm text-gray-500 mb-2 gap-2">
         <span>${job.location}</span> • 
         <span>${job.type}</span> • 
         <span>${job.salary}</span>
       </div>
+
       <p class="text-gray-700 mb-4">${job.description}</p>
+
       <div class="flex gap-3">
         <button class="flex-1 py-2 px-4 bg-green-100 text-green-700 font-semibold rounded-lg hover:bg-green-200"
                 onclick="updateStatus(${job.id}, 'Interview')">
           Interview
         </button>
+
         <button class="flex-1 py-2 px-4 bg-red-100 text-red-700 font-semibold rounded-lg hover:bg-red-200"
                 onclick="updateStatus(${job.id}, 'Rejected')">
           Rejected
@@ -159,13 +180,11 @@ function renderJobsCard(filter = "All") {
   });
 
   updateDashboardCounts();
-  highlightActiveCard();
 }
-
 
 // Update Status
 function updateStatus(id, newStatus) {
-  const job = jobs.find(j => j.id === id);
+  const job = jobs.find((j) => j.id === id);
   if (!job) return;
 
   if (job.status === newStatus) return;
@@ -177,12 +196,12 @@ function updateStatus(id, newStatus) {
 
 //Delete function
 function deleteJob(id, section) {
-  const job = jobs.find(j => j.id === id);
+  const job = jobs.find((j) => j.id === id);
   if (!job) return;
 
   if (section === "All") {
     // Hard delete (remove completely)
-    jobs = jobs.filter(j => j.id !== id);
+    jobs = jobs.filter((j) => j.id !== id);
   } else {
     // Soft delete (reset status only)
     job.status = "Pending";
@@ -194,27 +213,6 @@ function deleteJob(id, section) {
 // Dashboard Filter
 function filterDashboard(filter) {
   renderJobsCard(filter);
-}
-
-// Highlight Active Card
-function highlightActiveCard() {
-  const cards = document.querySelectorAll(".dash-card");
-  cards.forEach((card) => card.classList.remove("border-2", "border-blue-500"));
-
-  if (currentFilter === "All")
-    document
-      .getElementById("totalCard")
-      .classList.add("border-2", "border-blue-500");
-
-  if (currentFilter === "Interview")
-    document
-      .getElementById("interviewCard")
-      .classList.add("border-2", "border-blue-500");
-
-  if (currentFilter === "Rejected")
-    document
-      .getElementById("rejectedCard")
-      .classList.add("border-2", "border-blue-500");
 }
 
 // Default Load
