@@ -129,7 +129,7 @@ function renderJobsCard(filter = "All") {
     card.className = "bg-white p-6 rounded-lg shadow border border-gray-200";
 
     card.innerHTML = `
-      <div class='flex justify-betwine'>
+      <div class='flex justify-between'>
         <h3 class="text-lg font-semibold text-gray-800 mb-1">${job.companyName}</h3>
         <button class="py-1 px-2 bg-gray-200 text-red-700 rounded hover:bg-gray-300"
           onclick="deleteJob(${job.id}, '${currentFilter}')">
